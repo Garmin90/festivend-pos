@@ -98,14 +98,18 @@ const Index = () => {
           <div className="bg-card rounded-2xl p-6 shadow-lg">
             <h2 className="text-xl font-bold mb-4">Menu</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {PRODUCTS.map((product) => (
-                <ProductButton
-                  key={product.id}
-                  name={product.name}
-                  price={product.price}
-                  onQuantityChange={(qty) => handleQuantityChange(product, qty)}
-                />
-              ))}
+              {PRODUCTS.map((product) => {
+                const orderItem = order.find(item => item.productId === product.id);
+                return (
+                  <ProductButton
+                    key={product.id}
+                    name={product.name}
+                    price={product.price}
+                    currentQuantity={orderItem?.quantity ?? 0}
+                    onQuantityChange={(qty) => handleQuantityChange(product, qty)}
+                  />
+                );
+              })}
             </div>
           </div>
 

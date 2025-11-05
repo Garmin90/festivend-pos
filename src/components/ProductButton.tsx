@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Minus } from "lucide-react";
 
 interface ProductButtonProps {
   name: string;
   price: number;
+  currentQuantity?: number;
   onQuantityChange: (quantity: number) => void;
 }
 
-export const ProductButton = ({ name, price, onQuantityChange }: ProductButtonProps) => {
-  const [quantity, setQuantity] = useState(0);
-  const [showControls, setShowControls] = useState(false);
+export const ProductButton = ({ name, price, currentQuantity = 0, onQuantityChange }: ProductButtonProps) => {
+  const [quantity, setQuantity] = useState(currentQuantity);
+  const [showControls, setShowControls] = useState(currentQuantity > 0);
+
+  useEffect(() => {
+    setQuantity(currentQuantity);
+    setShowControls(currentQuantity > 0);
+  }, [currentQuantity]);
 
   const handleIncrement = () => {
     const newQty = quantity + 1;
@@ -46,23 +52,26 @@ export const ProductButton = ({ name, price, onQuantityChange }: ProductButtonPr
       </Button>
       
       {showControls && (
-        <div className="absolute inset-0 bg-card/95 backdrop-blur-sm rounded-lg flex items-center justify-center gap-4 shadow-xl">
-          <Button
-            onClick={handleDecrement}
-            size="icon"
-            variant="outline"
-            className="h-12 w-12 rounded-full"
-          >
-            <Minus className="h-5 w-5" />
-          </Button>
-          <span className="text-3xl font-bold min-w-[3rem] text-center">{quantity}</span>
-          <Button
-            onClick={handleIncrement}
-            size="icon"
-            className="h-12 w-12 rounded-full"
-          >
-            <Plus className="h-5 w-5" />
-          </Button>
+        <div className="absolute inset-0 bg-card/95 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center gap-3 shadow-xl p-2">
+          <span className="text-sm font-semibold text-center line-clamp-1">{name}</span>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={handleDecrement}
+              size="icon"
+              variant="outline"
+              className="h-12 w-12 rounded-full"
+            >
+              <Minus className="h-5 w-5" />
+            </Button>
+            <span className="text-3xl font-bold min-w-[3rem] text-center">{quantity}</span>
+            <Button
+              onClick={handleIncrement}
+              size="icon"
+              className="h-12 w-12 rounded-full"
+            >
+              <Plus className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       )}
     </div>
